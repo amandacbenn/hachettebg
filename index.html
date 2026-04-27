@@ -13,17 +13,29 @@
   <link rel="manifest" href="site.webmanifest">
 
   <style>
+    :root {
+      --bg: #f8f8f8;
+      --text: #333;
+      --secondary: #555;
+    }
+    [data-theme="dark"] {
+      --bg: #1a1a1a;
+      --text: #e0e0e0;
+      --secondary: #aaa;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      background: #f8f8f8;
-      color: #333;
+      background: var(--bg);
+      color: var(--text);
       text-align: center;
+      transition: background 0.3s, color 0.3s;
     }
     h1 { margin: 30px 0 10px; font-size: 2.8em; }
     h2 { margin: 50px 0 20px; font-size: 2em; }
-    p { font-size: 1.3em; color: #555; }
+    p { font-size: 1.3em; color: var(--secondary); }
 
     .gallery {
       display: grid;
@@ -64,15 +76,27 @@
       margin: 20px auto;
       display: block;
     }
+
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8em;
+      cursor: pointer;
+      z-index: 100;
+    }
   </style>
 </head>
 <body>
+  <button class="theme-toggle" id="theme-toggle">🌙</button>
+
   <h1>Hachette BG</h1>
   <p>Photo Gallery</p>
 
-  <div class="gallery" id="gallery">
-    <!-- Photos loaded by JavaScript -->
-  </div>
+  <div class="gallery" id="gallery"></div>
 
   <h2>Videos</h2>
   
@@ -80,7 +104,7 @@
     <source src="marinbarspin.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
-  <p>Marin Takes a Spin</p>
+  <p>Marin Bar Spin</p>
 
   <p>More coming soon...</p>
 
@@ -94,8 +118,6 @@
       { file: "greenjammies.png",  caption: "Green Pajamas" },
       { file: "marinballet.jpg",   caption: "Marin Ballet" },
       { file: "readyrun.png",      caption: "Ready to Run" }
-      // Add new photos below this line:
-      // { file: "newphoto.jpg", caption: "Your Caption Here" },
     ];
 
     const gallery = document.getElementById('gallery');
@@ -106,6 +128,27 @@
           <div class="caption">${img.caption}</div>
         </a>`;
       gallery.innerHTML += html;
+    });
+
+    // Dark Mode Toggle
+    const toggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    if (currentTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      toggle.textContent = '☀️';
+    }
+
+    toggle.addEventListener('click', () => {
+      if (document.documentElement.getAttribute('data-theme') === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        toggle.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        toggle.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+      }
     });
   </script>
 </body>
