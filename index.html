@@ -21,14 +21,9 @@
       color: #333;
       text-align: center;
     }
-    h1 {
-      margin: 30px 0 10px;
-      font-size: 2.8em;
-    }
-    p {
-      font-size: 1.3em;
-      color: #555;
-    }
+    h1 { margin: 30px 0 10px; font-size: 2.8em; }
+    p { font-size: 1.3em; color: #555; }
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -48,14 +43,10 @@
       display: block;
       transition: transform 0.4s;
     }
-    .photo:hover img {
-      transform: scale(1.06);
-    }
+    .photo:hover img { transform: scale(1.06); }
     .caption {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       background: linear-gradient(transparent, rgba(0,0,0,0.85));
       color: white;
       padding: 20px 15px 15px;
@@ -63,66 +54,41 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
-    .photo:hover .caption {
-      opacity: 1;
-    }
+    .photo:hover .caption { opacity: 1; }
   </style>
 </head>
 <body>
   <h1>Hachette BG</h1>
   <p>Photo Gallery</p>
 
-  <div class="gallery">
-    <a href="linkedin1.jpg" target="_blank" class="photo">
-      <img src="linkedin1.jpg" alt="Professional Headshot">
-      <div class="caption">Professional Headshot</div>
-    </a>
-    
-    <a href="pinkdream.jpg" target="_blank" class="photo">
-      <img src="pinkdream.jpg" alt="Pink Dream">
-      <div class="caption">Pink Dream Set</div>
-    </a>
-    
-    <a href="blueflowers.jpg" target="_blank" class="photo">
-      <img src="blueflowers.jpg" alt="Blue Flowers">
-      <div class="caption">Blue Floral Look</div>
-    </a>
-    
-    <a href="flowerchemise.png" target="_blank" class="photo">
-      <img src="flowerchemise.png" alt="Floral Chemise">
-      <div class="caption">Floral Chemise</div>
-    </a>
-    
-    <a href="marinbar.jpg" target="_blank" class="photo">
-      <img src="marinbar.jpg" alt="At the Bar">
-      <div class="caption">Night at the Bar</div>
-    </a>
-    
-    <a href="greenjammies.png" target="_blank" class="photo">
-      <img src="greenjammies.png" alt="Green Jammies">
-      <div class="caption">Green Pajamas</div>
-    </a>
-    
-    <a href="readyrun.png" target="_blank" class="photo">
-      <img src="readyrun.png" alt="Ready to Run">
-      <div class="caption">Ready to Run</div>
-    </a>
+  <div class="gallery" id="gallery">
+    <!-- New photos are added here -->
   </div>
 
   <p>More coming soon...</p>
-  </style>
-</head>
-<body>
-  <!-- Rest of your page content stays the same -->
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hachette BG</title>
-  <style>
-    body {
-     
+  <script>
+    const images = [
+      { file: "linkedin1.jpg",     caption: "Professional Headshot" },
+      { file: "pinkdream.jpg",     caption: "Pink Dream Set" },
+      { file: "blueflowers.jpg",   caption: "Blue Floral Look" },
+      { file: "flowerchemise.png", caption: "Floral Chemise" },
+      { file: "marinbar.jpg",      caption: "Night at the Bar" },
+      { file: "greenjammies.png",  caption: "Green Pajamas" },
+      { file: "readyrun.png",      caption: "Ready to Run" },
+      // Add new photos below this line (just copy the format):
+      // { file: "newphoto.jpg", caption: "Your Caption Here" },
+    ];
+
+    const gallery = document.getElementById('gallery');
+    images.forEach(img => {
+      const html = `
+        <a href="${img.file}" target="_blank" class="photo">
+          <img src="${img.file}" alt="${img.caption}">
+          <div class="caption">${img.caption}</div>
+        </a>`;
+      gallery.innerHTML += html;
+    });
+  </script>
 </body>
 </html>
