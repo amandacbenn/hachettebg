@@ -81,44 +81,51 @@
   <p>More coming soon...</p>
 
   <script>
-    const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
-    const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
+const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
+  const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
 
-    async function loadMedia() {
-      try {
-        const response = await fetch(workerUrl);
-        if (!response.ok) throw new Error("Worker failed");
-        const files = await response.json();
+  async function loadMedia() {
+    try {
+      const response = await fetch(workerUrl);
+      const files = await response.json();
 
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = ''; // Clear first
+      const photos = files.filter(f => f.match(/\.(jpg|jpeg|png|gif)$/i));
+      const videos = files.filter(f => f.match(/\.mp4$/i));
 
-        files.forEach(filename => {
-          const isVideo = filename.toLowerCase().endsWith('.mp4');
-          let html = '';
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
 
-          if (isVideo) {
-            html = `
-              <div class="item">
-                <video controls>
-                  <source src="${bucketUrl}${filename}" type="video/mp4">
-                </video>
-                <div class="caption">${filename.replace(/\..+$/, '')}</div>
-              </div>`;
-          } else if (filename.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
-            html = `
-              <a href="${bucketUrl}${filename}" target="_blank" class="item">
-                <img src="${bucketUrl}${filename}" alt="${filename}">
-                <div class="caption">${filename.replace(/\..+$/, '')}</div>
-              </a>`;
-          }
+      // Photos section
+      if (photos.length > 0) {
+        gallery.innerHTML += '<h2>Photos</h2>';
+        photos.reverse().forEach(filename => {  // reverse = newest first
+          const html = `
+            <a href="${bucketUrl}${filename}" target="_blank" class="item">
+              <img src="${bucketUrl}${filename}" alt="${filename}">
+              <div class="caption">${filename.replace(/\..+$/, '')}</div>
+            </a>`;
           gallery.innerHTML += html;
         });
-      } catch (e) {
-        console.error("Error loading media:", e);
-        document.getElementById('gallery').innerHTML = "<p>Could not load media. Check console.</p>";
       }
+
+      // Videos section
+      if (videos.length > 0) {
+        gallery.innerHTML += '<h2>Videos</h2>';
+        videos.reverse().forEach(filename => {
+          const html = `
+            <div class="item">
+              <video controls>
+                <source src="${bucketUrl}${filename}" type="video/mp4">
+              </video>
+              <div class="caption">${filename.replace(/\..+$/, '')}</div>
+            </div>`;
+          gallery.innerHTML += html;
+        });
+      }
+    } catch (e) {
+      console.error("Error loading media:", e);
     }
+  }
 
     loadMedia();
 
