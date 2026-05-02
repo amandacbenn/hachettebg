@@ -44,19 +44,17 @@
       max-width: 1600px;
       margin: 40px auto;
     }
-    .photo {
+    .photo, .video-item {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .photo img {
+    .photo img, .video-item video {
       width: 100%;
       height: auto;
       display: block;
-      transition: transform 0.4s;
     }
-    .photo:hover img { transform: scale(1.06); }
     .caption {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -67,15 +65,7 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
-    .photo:hover .caption { opacity: 1; }
-
-    video {
-      max-width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      margin: 20px auto;
-      display: block;
-    }
+    .photo:hover .caption, .video-item:hover .caption { opacity: 1; }
 
     /* Dark Mode Toggle */
     .theme-toggle {
@@ -94,74 +84,75 @@
   <button class="theme-toggle" id="theme-toggle">🌙</button>
 
   <h1>Hachette BG</h1>
-  <p>Photo Gallery</p>
+  <p>Photo & Video Gallery</p>
 
   <div class="gallery" id="gallery"></div>
 
-  <h2>Videos</h2>
-  
-  <video controls>
-    <source src="marinbarspin.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <p>Marin Bar Spin</p>
-
-<video controls>
-    <source src="thankyoudaddy.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <p>Thank You Daddy</p>
-  
   <p>More coming soon...</p>
 
   <script>
-    const images = [
-      { file: "linkedin1.jpg",     caption: "Professional Headshot" },
-      { file: "pinkdream.jpg",     caption: "Pink Dream Set" },
-      { file: "blueflowers.jpg",   caption: "Blue Floral Look" },
-      { file: "flowerchemise.png", caption: "Floral Chemise" },
-      { file: "marinbar.jpg",      caption: "Night at the Bar" },
-      { file: "greenjammies.png",  caption: "Green Pajamas" },
-      { file: "marinballet.jpg",   caption: "Marin Ballet" },
-      { file: "readyrun.png",      caption: "Ready to Run" },
-      { file: "IMG_2097.JPG",      caption: "Farmer's Market" },
-      { file: "IMG_2102.JPG",      caption: "White Tee" }, 
-      { file: "IMG_2108.JPG",      caption: "Backyard BBQ" },
-      { file: "IMG_2112.JPEG",      caption: "Tube Top" },
-      { file: "IMG_2115.JPG",      caption: "Pencil Skirt" },
-      { file: "IMG_2118.JPG",      caption: "Wide Leg Jeans" },
-      { file: "IMG_2121.JPG",      caption: "Fuck Me Boots" },
-      { file: "IMG_2132.JPG",      caption: "Flora Nikrooz Chemise" }, 
-      { file: "workoutbabe.jpg",   caption: "Baby Blue Workout" },
-      { file: "realcatsuit.jpg",   caption: "Leather Kitty Cat" },
-      { file: "japanreal.jpg",     caption: "Japanese School Girl" },
-      { file: "skinny marin.jpg",  caption: "Rutgers Cheer Leader" },
-      { file: "dadtrampwide.jpg",  caption: "Daddy Trampoline Wide" },
-      { file: "yesdaddypink.jpg",  caption: "Yes Daddy Pink" },
-      { file: "bangcancap.jpg",    caption: "Bang Me in the Can" },
-      { file: "domecancap.jpg",    caption: "Do Me in the Can" },
-      { file: "pompomchick.jpg",   caption: "Pom Pom Girl" },      
+    const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
+
+    const media = [
+      { file: "linkedin1.jpg",     type: "image", caption: "Professional Headshot" },
+      { file: "pinkdream.jpg",     type: "image", caption: "Pink Dream Set" },
+      { file: "blueflowers.jpg",   type: "image", caption: "Blue Floral Look" },
+      { file: "flowerchemise.png", type: "image", caption: "Floral Chemise" },
+      { file: "marinbar.jpg",      type: "image", caption: "Night at the Bar" },
+      { file: "greenjammies.png",  type: "image", caption: "Green Pajamas" },
+      { file: "marinballet.jpg",   type: "image", caption: "Marin Ballet" },
+      { file: "readyrun.png",      type: "image", caption: "Ready to Run" },
+      { file: "IMG_2097.JPG",      type: "image", caption: "Farmer's Market" },
+      { file: "IMG_2102.JPG",      type: "image", caption: "White Tee" }, 
+      { file: "IMG_2108.JPG",      type: "image", caption: "Backyard BBQ" },
+      { file: "IMG_2112.JPEG",     type: "image", caption: "Tube Top" },
+      { file: "IMG_2115.JPG",      type: "image", caption: "Pencil Skirt" },
+      { file: "IMG_2118.JPG",      type: "image", caption: "Wide Leg Jeans" },
+      { file: "IMG_2121.JPG",      type: "image", caption: "Fuck Me Boots" },
+      { file: "IMG_2132.JPG",      type: "image", caption: "Flora Nikrooz Chemise" }, 
+      { file: "workoutbabe.jpg",   type: "image", caption: "Baby Blue Workout" },
+      { file: "realcatsuit.jpg",   type: "image", caption: "Leather Kitty Cat" },
+      { file: "japanreal.jpg",     type: "image", caption: "Japanese School Girl" },
+      { file: "skinny marin.jpg",  type: "image", caption: "Rutgers Cheer Leader" },
+      { file: "dadtrampwide.jpg",  type: "image", caption: "Daddy Trampoline Wide" },
+      { file: "yesdaddypink.jpg",  type: "image", caption: "Yes Daddy Pink" },
+      { file: "bangcancap.jpg",    type: "image", caption: "Bang Me in the Can" },
+      { file: "domecancap.jpg",    type: "image", caption: "Do Me in the Can" },
+      { file: "pompomchick.jpg",   type: "image", caption: "Pom Pom Girl" },   
+      { file: "phuckcan.mp4",      type: "video", caption: "Phuck Can" },
+      { file: "marinbarspin.mp4",  type: "video", caption: "Marin Bar Spin" }
+      // Add more here. Just change type to "image" or "video"
     ];
 
     const gallery = document.getElementById('gallery');
-    images.forEach(img => {
-      const html = `
-        <a href="${img.file}" target="_blank" class="photo">
-          <img src="${img.file}" alt="${img.caption}">
-          <div class="caption">${img.caption}</div>
-        </a>`;
+
+    media.forEach(item => {
+      let html = '';
+      if (item.type === "video") {
+        html = `
+          <div class="video-item">
+            <video controls>
+              <source src="${bucketUrl}${item.file}" type="video/mp4">
+            </video>
+            <div class="caption">${item.caption}</div>
+          </div>`;
+      } else {
+        html = `
+          <a href="${bucketUrl}${item.file}" target="_blank" class="photo">
+            <img src="${bucketUrl}${item.file}" alt="${item.caption}">
+            <div class="caption">${item.caption}</div>
+          </a>`;
+      }
       gallery.innerHTML += html;
     });
 
     // Dark Mode Toggle
     const toggle = document.getElementById('theme-toggle');
     const currentTheme = localStorage.getItem('theme') || 'light';
-
     if (currentTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       toggle.textContent = '☀️';
     }
-
     toggle.addEventListener('click', () => {
       if (document.documentElement.getAttribute('data-theme') === 'dark') {
         document.documentElement.removeAttribute('data-theme');
