@@ -34,7 +34,6 @@
       transition: background 0.3s, color 0.3s;
     }
     h1 { margin: 30px 0 10px; font-size: 2.8em; }
-    h2 { margin: 50px 0 20px; font-size: 2em; }
     p { font-size: 1.3em; color: var(--secondary); }
 
     .gallery {
@@ -44,13 +43,13 @@
       max-width: 1600px;
       margin: 40px auto;
     }
-    .photo, .video-item {
+    .item {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .photo img, .video-item video {
+    .item img, .item video {
       width: 100%;
       height: auto;
       display: block;
@@ -65,9 +64,8 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
-    .photo:hover .caption, .video-item:hover .caption { opacity: 1; }
+    .item:hover .caption { opacity: 1; }
 
-    /* Dark Mode Toggle */
     .theme-toggle {
       position: fixed;
       top: 20px;
@@ -90,61 +88,43 @@
 
   <p>More coming soon...</p>
 
-  <script>
-    const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
+<script>
+  const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
+  const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
 
-    const media = [
-      { file: "linkedin1.jpg",     type: "image", caption: "Professional Headshot" },
-      { file: "pinkdream.jpg",     type: "image", caption: "Pink Dream Set" },
-      { file: "blueflowers.jpg",   type: "image", caption: "Blue Floral Look" },
-      { file: "flowerchemise.png", type: "image", caption: "Floral Chemise" },
-      { file: "marinbar.jpg",      type: "image", caption: "Night at the Bar" },
-      { file: "greenjammies.png",  type: "image", caption: "Green Pajamas" },
-      { file: "marinballet.jpg",   type: "image", caption: "Marin Ballet" },
-      { file: "readyrun.png",      type: "image", caption: "Ready to Run" },
-      { file: "IMG_2097.JPG",      type: "image", caption: "Farmer's Market" },
-      { file: "IMG_2102.JPG",      type: "image", caption: "White Tee" }, 
-      { file: "IMG_2108.JPG",      type: "image", caption: "Backyard BBQ" },
-      { file: "IMG_2112.JPEG",     type: "image", caption: "Tube Top" },
-      { file: "IMG_2115.JPG",      type: "image", caption: "Pencil Skirt" },
-      { file: "IMG_2118.JPG",      type: "image", caption: "Wide Leg Jeans" },
-      { file: "IMG_2121.JPG",      type: "image", caption: "Fuck Me Boots" },
-      { file: "IMG_2132.JPG",      type: "image", caption: "Flora Nikrooz Chemise" }, 
-      { file: "workoutbabe.jpg",   type: "image", caption: "Baby Blue Workout" },
-      { file: "realcatsuit.jpg",   type: "image", caption: "Leather Kitty Cat" },
-      { file: "japanreal.jpg",     type: "image", caption: "Japanese School Girl" },
-      { file: "skinny marin.jpg",  type: "image", caption: "Rutgers Cheer Leader" },
-      { file: "dadtrampwide.jpg",  type: "image", caption: "Daddy Trampoline Wide" },
-      { file: "yesdaddypink.jpg",  type: "image", caption: "Yes Daddy Pink" },
-      { file: "bangcancap.jpg",    type: "image", caption: "Bang Me in the Can" },
-      { file: "domecancap.jpg",    type: "image", caption: "Do Me in the Can" },
-      { file: "pompomchick.jpg",   type: "image", caption: "Pom Pom Girl" },   
-      { file: "phuckcan.mp4",      type: "video", caption: "Phuck Can" },
-      { file: "marinbarspin.mp4",  type: "video", caption: "Marin Bar Spin" }
-      // Add more here. Just change type to "image" or "video"
-    ];
+    async function loadMedia() {
+      try {
+        const response = await fetch(workerUrl);
+        const files = await response.json();
 
-    const gallery = document.getElementById('gallery');
+        const gallery = document.getElementById('gallery');
+        files.forEach(filename => {
+          const isVideo = filename.toLowerCase().endsWith('.mp4');
+          let html = '';
 
-    media.forEach(item => {
-      let html = '';
-      if (item.type === "video") {
-        html = `
-          <div class="video-item">
-            <video controls>
-              <source src="${bucketUrl}${item.file}" type="video/mp4">
-            </video>
-            <div class="caption">${item.caption}</div>
-          </div>`;
-      } else {
-        html = `
-          <a href="${bucketUrl}${item.file}" target="_blank" class="photo">
-            <img src="${bucketUrl}${item.file}" alt="${item.caption}">
-            <div class="caption">${item.caption}</div>
-          </a>`;
+          if (isVideo) {
+            html = `
+              <div class="item">
+                <video controls>
+                  <source src="${bucketUrl}${filename}" type="video/mp4">
+                </video>
+                <div class="caption">${filename.replace(/\..+$/, '')}</div>
+              </div>`;
+          } else {
+            html = `
+              <a href="${bucketUrl}${filename}" target="_blank" class="item">
+                <img src="${bucketUrl}${filename}" alt="${filename}">
+                <div class="caption">${filename.replace(/\..+$/, '')}</div>
+              </a>`;
+          }
+          gallery.innerHTML += html;
+        });
+      } catch (e) {
+        console.error("Could not load media", e);
       }
-      gallery.innerHTML += html;
-    });
+    }
+
+    loadMedia();
 
     // Dark Mode Toggle
     const toggle = document.getElementById('theme-toggle');
