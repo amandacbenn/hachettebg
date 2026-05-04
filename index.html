@@ -26,6 +26,7 @@
       transition: background 0.3s, color 0.3s;
     }
     h1 { margin: 30px 0 10px; font-size: 2.8em; }
+    h2 { margin: 50px 0 20px; font-size: 2em; }
     p { font-size: 1.3em; color: var(--secondary); }
 
     .gallery {
@@ -81,55 +82,66 @@
   <p>More coming soon...</p>
 
   <script>
-const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
-  const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
+    const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
+    const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
+    const captionsUrl = bucketUrl + "captions.json";
 
-  async function loadMedia() {
-    try {
-      const response = await fetch(workerUrl);
-      const files = await response.json();
+    async function loadMedia() {
+      try {
+        const [filesRes, captionsRes] = await Promise.all([
+          fetch(workerUrl),
+          fetch(captionsUrl)
+        ]);
 
-      const photos = files.filter(f => f.match(/\.(jpg|jpeg|png|gif)$/i));
-      const videos = files.filter(f => f.match(/\.mp4$/i));
+        const files = await filesRes.json();
+        let captions = {};
+        try {
+          captions = await captionsRes.json();
+        } catch(e) {}
 
-      const gallery = document.getElementById('gallery');
-      gallery.innerHTML = '';
+        const photos = files.filter(f => f.match(/\.(jpg|jpeg|png|gif)$/i));
+        const videos = files.filter(f => f.match(/\.mp4$/i));
 
-      // Photos section
-      if (photos.length > 0) {
-        gallery.innerHTML += '<h2>Photos</h2>';
-        photos.reverse().forEach(filename => {  // reverse = newest first
-          const html = `
-            <a href="${bucketUrl}${filename}" target="_blank" class="item">
-              <img src="${bucketUrl}${filename}" alt="${filename}">
-              <div class="caption">${filename.replace(/\..+$/, '')}</div>
-            </a>`;
-          gallery.innerHTML += html;
-        });
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+
+        // Photos
+        if (photos.length > 0) {
+          gallery.innerHTML += '<h2>Photos</h2>';
+          photos.reverse().forEach(filename => {
+            const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
+            const html = `
+              <a href="${bucketUrl}${filename}" target="_blank" class="item">
+                <img src="${bucketUrl}${filename}" alt="${caption}">
+                <div class="caption">${caption}</div>
+              </a>`;
+            gallery.innerHTML += html;
+          });
+        }
+
+        // Videos
+        if (videos.length > 0) {
+          gallery.innerHTML += '<h2>Videos</h2>';
+          videos.reverse().forEach(filename => {
+            const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
+            const html = `
+              <div class="item">
+                <video controls>
+                  <source src="${bucketUrl}${filename}" type="video/mp4">
+                </video>
+                <div class="caption">${caption}</div>
+              </div>`;
+            gallery.innerHTML += html;
+          });
+        }
+      } catch (e) {
+        console.error("Error loading media:", e);
       }
-
-      // Videos section
-      if (videos.length > 0) {
-        gallery.innerHTML += '<h2>Videos</h2>';
-        videos.reverse().forEach(filename => {
-          const html = `
-            <div class="item">
-              <video controls>
-                <source src="${bucketUrl}${filename}" type="video/mp4">
-              </video>
-              <div class="caption">${filename.replace(/\..+$/, '')}</div>
-            </div>`;
-          gallery.innerHTML += html;
-        });
-      }
-    } catch (e) {
-      console.error("Error loading media:", e);
     }
-  }
 
     loadMedia();
 
-    // Dark Mode Toggle (same as before)
+    // Dark Mode Toggle
     const toggle = document.getElementById('theme-toggle');
     const currentTheme = localStorage.getItem('theme') || 'light';
     if (currentTheme === 'dark') {
