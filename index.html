@@ -26,6 +26,7 @@
       transition: background 0.3s, color 0.3s;
     }
 
+    /* Hero Banner */
     .hero {
       position: relative;
       margin: -20px -20px 50px -20px;
@@ -55,8 +56,19 @@
       opacity: 0.95;
     }
 
-    .main-header { font-size: 2.4em; margin: 40px 0 40px 0; color: var(--text); }
-    .section-header { font-size: 2.0em; margin: 60px 0 30px 0; color: var(--secondary); text-align: center; }
+    .main-header { font-size: 2.4em; margin: 40px 0 30px 0; color: var(--text); }
+    .section-header { font-size: 2.0em; margin: 50px 0 25px 0; color: var(--secondary); text-align: center; }
+
+    .jump-to-videos {
+      display: inline-block;
+      margin: 10px 0 40px;
+      padding: 12px 28px;
+      background: #ff69b4;
+      color: white;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
     .gallery {
       display: grid;
@@ -103,6 +115,23 @@
       border-radius: 8px;
     }
 
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(0,0,0,0.75);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8em;
+      z-index: 200;
+      cursor: pointer;
+    }
+
     .theme-toggle {
       position: fixed;
       top: 20px;
@@ -130,6 +159,7 @@
   <h3 class="section-header">Images</h3>
   <div class="gallery" id="gallery"></div>
 
+  <!-- Jump link moved up here -->
   <a href="#videos" class="jump-to-videos">↓ Jump to Videos</a>
 
   <h3 class="section-header" id="videos">Videos</h3>
@@ -137,6 +167,10 @@
 
   <p>More coming soon...</p>
 
+  <!-- Back to Top Button -->
+  <div class="back-to-top" id="back-to-top">↑</div>
+
+  <!-- Lightbox -->
   <div id="lightbox">
     <img id="lightbox-image" src="" alt="">
   </div>
@@ -157,7 +191,12 @@
         const response = await fetch(workerUrl);
         const files = await response.json();
 
-        const photos = files.filter(f => f.match(/\.(jpg|jpeg|png|gif)$/i));
+        // STRICTLY exclude thumbnails folder
+        const photos = files.filter(f => 
+          f.match(/\.(jpg|jpeg|png|gif)$/i) && 
+          !f.startsWith("thumbnails/")
+        );
+
         const videos = files.filter(f => f.match(/\.mp4$/i));
 
         const photoGallery = document.getElementById('gallery');
@@ -179,7 +218,7 @@
 
         // Videos with thumbnails from /thumbnails/ folder
         videos.reverse().forEach(filename => {
-          const baseName = filename.replace('.mp4', '');
+          const baseName = filename.replace(/\.(mp4|MP4)$/i, '');
           const thumbnail = bucketUrl + "thumbnails/" + baseName + ".jpg";
           const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
 
@@ -204,6 +243,15 @@
 
     document.getElementById('lightbox').addEventListener('click', function(e) {
       if (e.target.id === 'lightbox') this.style.display = 'none';
+    });
+
+    // Back to Top Button
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      backToTop.style.display = (window.scrollY > 600) ? 'flex' : 'none';
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     loadMedia();
