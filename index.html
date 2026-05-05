@@ -26,7 +26,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Hero Banner */
     .hero {
       position: relative;
       margin: -20px -20px 50px -20px;
@@ -56,20 +55,9 @@
       opacity: 0.95;
     }
 
-    /* Headers */
-    .main-header {
-      font-size: 2.4em;
-      margin: 40px 0 40px 0;
-      color: var(--text);
-    }
-    .section-header {
-      font-size: 2.0em;
-      margin: 60px 0 30px 0;
-      color: var(--secondary);
-      text-align: center;
-    }
+    .main-header { font-size: 2.4em; margin: 40px 0 40px 0; color: var(--text); }
+    .section-header { font-size: 2.0em; margin: 60px 0 30px 0; color: var(--secondary); text-align: center; }
 
-    /* Masonry Grid */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -100,7 +88,6 @@
       text-align: center;
     }
 
-    /* Lightbox */
     #lightbox {
       display: none;
       position: fixed;
@@ -131,7 +118,6 @@
 <body>
   <button class="theme-toggle" id="theme-toggle">🌙</button>
 
-  <!-- Hero Banner -->
   <div class="hero">
     <div class="hero-content">
       <h1>Smart.<br>Sassy.</h1>
@@ -144,12 +130,13 @@
   <h3 class="section-header">Images</h3>
   <div class="gallery" id="gallery"></div>
 
-  <h3 class="section-header">Videos</h3>
+  <a href="#videos" class="jump-to-videos">↓ Jump to Videos</a>
+
+  <h3 class="section-header" id="videos">Videos</h3>
   <div class="gallery" id="video-gallery"></div>
 
   <p>More coming soon...</p>
 
-  <!-- Lightbox -->
   <div id="lightbox">
     <img id="lightbox-image" src="" alt="">
   </div>
@@ -179,7 +166,7 @@
         photoGallery.innerHTML = '';
         videoGallery.innerHTML = '';
 
-        // Photos with Lightbox
+        // Photos
         photos.reverse().forEach(filename => {
           const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
           const html = `
@@ -190,10 +177,12 @@
           photoGallery.innerHTML += html;
         });
 
-        // Videos with Thumbnail Support
+        // Videos with thumbnails from /thumbnails/ folder
         videos.reverse().forEach(filename => {
+          const baseName = filename.replace('.mp4', '');
+          const thumbnail = bucketUrl + "thumbnails/" + baseName + ".jpg";
           const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
-          const thumbnail = bucketUrl + filename.replace('.mp4', '.jpg'); // Try matching .jpg thumbnail
+
           const html = `
             <div class="item">
               <video controls poster="${thumbnail}">
