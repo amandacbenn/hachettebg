@@ -69,12 +69,38 @@
       cursor: pointer;
       z-index: 100;
     }
+
+    /* Hero Banner */
+    .hero {
+      position: relative;
+      margin: -20px -20px 50px -20px;
+      height: 65vh;
+      min-height: 520px;
+      background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), 
+                  url('marinmonroebanner.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 0 3px 15px rgba(0,0,0,0.8);
+    }
+    .hero-content {
+      text-align: center;
+      padding: 0 20px;
+    }
   </style>
 </head>
 <body>
   <button class="theme-toggle" id="theme-toggle">🌙</button>
 
-  <h1>Hachette BG</h1>
+  <!-- Hero Banner -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1 style="font-size: 3.8em; margin: 0 0 12px 0;">Marin's Secret</h1>
+      <p style="font-size: 1.5em; margin: 0;">Bold. Playful. Unapologetically me.</p>
+    </div>
+  </div>
+
   <p>Photo & Video Gallery</p>
 
   <div class="gallery" id="gallery"></div>
@@ -90,13 +116,8 @@
       let captions = {};
       try {
         const capRes = await fetch(captionsUrl);
-        if (capRes.ok) {
-          captions = await capRes.json();
-          console.log("Captions loaded successfully");
-        }
-      } catch(e) {
-        console.log("No captions.json found or error loading it - using auto captions");
-      }
+        if (capRes.ok) captions = await capRes.json();
+      } catch(e) {}
 
       try {
         const response = await fetch(workerUrl);
