@@ -32,10 +32,10 @@
       margin: -20px -20px 50px -20px;
       height: 490px;
       background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), 
-                  url('marinmonroebannercrop2.jpg') center/cover no-repeat;
+                  url('hero-banner.jpg') center/cover no-repeat;
       display: flex;
       align-items: center;
-      justify-content: flex-end;           /* Push content to the right */
+      justify-content: flex-end;
       padding-right: 8%;
       color: white;
       text-shadow: 0 3px 12px rgba(0,0,0,0.9);
@@ -48,7 +48,7 @@
       font-size: 3.1em;
       margin: 0 0 8px 0;
       line-height: 1.05;
-      color: #ff69b4;           /* Hot pink to match neon */
+      color: #ff69b4;
     }
     .hero p {
       font-size: 1.45em;
@@ -56,15 +56,20 @@
       opacity: 0.95;
     }
 
-    h2 { margin: 50px 0 20px; font-size: 2em; }
-    p { font-size: 1.3em; color: var(--secondary); }
+    /* Section Headers */
+    .section-header {
+      font-size: 2.2em;
+      margin: 60px 0 30px 0;
+      color: var(--text);
+      text-align: center;
+    }
 
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 20px;
       max-width: 1600px;
-      margin: 40px auto;
+      margin: 0 auto 60px;
     }
     .item {
       position: relative;
@@ -79,15 +84,13 @@
     }
     .caption {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      top: 0; left: 0; right: 0;
+      background: linear-gradient(rgba(0,0,0,0.75), transparent);
       color: white;
-      padding: 20px 15px 15px;
+      padding: 15px 15px 20px;
       font-size: 1.1em;
-      opacity: 0;
-      transition: opacity 0.3s;
+      text-align: center;
     }
-    .item:hover .caption { opacity: 1; }
 
     .theme-toggle {
       position: fixed;
@@ -112,9 +115,12 @@
     </div>
   </div>
 
-  <p>Photo & Video Gallery</p>
+  <h2 class="section-header">Media Gallery</h2>
 
   <div class="gallery" id="gallery"></div>
+
+  <h2 class="section-header">Videos</h2>
+  <div class="gallery" id="video-gallery"></div>
 
   <p>More coming soon...</p>
 
@@ -137,36 +143,35 @@
         const photos = files.filter(f => f.match(/\.(jpg|jpeg|png|gif)$/i));
         const videos = files.filter(f => f.match(/\.mp4$/i));
 
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
+        const photoGallery = document.getElementById('gallery');
+        const videoGallery = document.getElementById('video-gallery');
 
-        if (photos.length > 0) {
-          gallery.innerHTML += '<h2>Photos</h2>';
-          photos.reverse().forEach(filename => {
-            const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
-            const html = `
-              <a href="${bucketUrl}${filename}" target="_blank" class="item">
-                <img src="${bucketUrl}${filename}" alt="${caption}">
-                <div class="caption">${caption}</div>
-              </a>`;
-            gallery.innerHTML += html;
-          });
-        }
+        photoGallery.innerHTML = '';
+        videoGallery.innerHTML = '';
 
-        if (videos.length > 0) {
-          gallery.innerHTML += '<h2>Videos</h2>';
-          videos.reverse().forEach(filename => {
-            const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
-            const html = `
-              <div class="item">
-                <video controls>
-                  <source src="${bucketUrl}${filename}" type="video/mp4">
-                </video>
-                <div class="caption">${caption}</div>
-              </div>`;
-            gallery.innerHTML += html;
-          });
-        }
+        // Photos
+        photos.reverse().forEach(filename => {
+          const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
+          const html = `
+            <a href="${bucketUrl}${filename}" target="_blank" class="item">
+              <img src="${bucketUrl}${filename}" alt="${caption}">
+              <div class="caption">${caption}</div>
+            </a>`;
+          photoGallery.innerHTML += html;
+        });
+
+        // Videos
+        videos.reverse().forEach(filename => {
+          const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
+          const html = `
+            <div class="item">
+              <video controls poster="${bucketUrl}${filename.replace('.mp4', '.jpg')}">
+                <source src="${bucketUrl}${filename}" type="video/mp4">
+              </video>
+              <div class="caption">${caption}</div>
+            </div>`;
+          videoGallery.innerHTML += html;
+        });
       } catch (e) {
         console.error("Error loading media:", e);
       }
