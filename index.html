@@ -65,26 +65,29 @@
     .section-header {
       font-size: 2.0em;
       margin: 60px 0 30px 0;
-      color: var(--secondary);        /* Dimmer */
+      color: var(--secondary);
       text-align: center;
     }
 
+    /* Masonry Grid */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
       max-width: 1600px;
-      margin: 0 auto 60px;
+      margin: 0 auto 80px;
     }
     .item {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      cursor: pointer;
     }
-    .item img, .item video {
+    .item img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
     .caption {
@@ -93,8 +96,24 @@
       background: linear-gradient(rgba(0,0,0,0.75), transparent);
       color: white;
       padding: 15px 15px 20px;
-      font-size: 1.1em;
+      font-size: 1.05em;
       text-align: center;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    #lightbox img {
+      max-width: 95%;
+      max-height: 95vh;
+      border-radius: 8px;
     }
 
     .theme-toggle {
@@ -130,6 +149,11 @@
 
   <p>More coming soon...</p>
 
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <img id="lightbox-image" src="" alt="">
+  </div>
+
   <script>
     const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
     const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
@@ -155,14 +179,14 @@
         photoGallery.innerHTML = '';
         videoGallery.innerHTML = '';
 
-        // Photos
+        // Photos with Lightbox
         photos.reverse().forEach(filename => {
           const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
           const html = `
-            <a href="${bucketUrl}${filename}" target="_blank" class="item">
+            <div class="item" onclick="openLightbox('${bucketUrl}${filename}')">
               <img src="${bucketUrl}${filename}" alt="${caption}">
               <div class="caption">${caption}</div>
-            </a>`;
+            </div>`;
           photoGallery.innerHTML += html;
         });
 
@@ -182,6 +206,18 @@
         console.error("Error loading media:", e);
       }
     }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-image').src = src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    // Close lightbox when clicking outside the image
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target.id === 'lightbox') {
+        this.style.display = 'none';
+      }
+    });
 
     loadMedia();
 
