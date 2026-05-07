@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hachette BG</title>
-  
+ 
+  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon-180x180.png">
@@ -55,9 +56,12 @@
       opacity: 0.95;
     }
 
-    .main-header { font-size: 2.4em; margin: 40px 0 20px 0; color: var(--text); }
+    .main-header { 
+      font-size: 2.4em; 
+      margin: 40px 0 30px 0; 
+      color: var(--text); 
+    }
 
-    /* Section Header and Navigation Menu */
     .section-header-wrapper {
       display: flex;
       justify-content: space-between;
@@ -65,23 +69,13 @@
       max-width: 1600px;
       margin: 30px auto 25px;
       padding: 0 20px;
-      box-sizing: border-box;
     }
-    
-    .section-header { 
-      font-size: 2.0em; 
-      margin: 0; 
-      color: var(--secondary); 
-      text-align: left; 
+    .section-header {
+      font-size: 2.0em;
+      margin: 0;
+      color: var(--secondary);
     }
-
-    .jump-menu {
-      display: flex;
-      gap: 15px;
-    }
-
     .jump-menu a {
-      display: inline-block;
       padding: 10px 24px;
       background: #ff69b4;
       color: white;
@@ -90,7 +84,6 @@
       font-weight: bold;
       transition: background 0.3s;
     }
-
     .jump-menu a:hover {
       background: #e65c9e;
     }
@@ -115,6 +108,21 @@
       object-fit: cover;
       display: block;
     }
+
+    /* Better fullscreen for vertical videos */
+    video::-webkit-media-fullscreen {
+      object-fit: contain !important;
+    }
+    video:-webkit-full-screen {
+      object-fit: contain !important;
+    }
+    video:-moz-full-screen {
+      object-fit: contain !important;
+    }
+    video:fullscreen {
+      object-fit: contain !important;
+    }
+
     .caption {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -188,10 +196,17 @@
       <a href="#videos">Videos</a>
     </div>
   </div>
-  
+
   <div class="gallery" id="gallery"></div>
 
-  <h3 class="section-header" id="videos">Videos</h3>
+  <div class="section-header-wrapper" id="videos">
+    <h3 class="section-header">Videos</h3>
+    <div class="jump-menu">
+      <a href="#images">Images</a>
+      <a href="#videos">Videos</a>
+    </div>
+  </div>
+
   <div class="gallery" id="video-gallery"></div>
 
   <p>More coming soon...</p>
@@ -218,12 +233,9 @@
         const response = await fetch(workerUrl);
         const files = await response.json();
 
-        // STRICTLY exclude thumbnails folder
         const photos = files.filter(f => 
-          f.match(/\.(jpg|jpeg|png|gif)$/i) && 
-          !f.startsWith("thumbnails/")
+          f.match(/\.(jpg|jpeg|png|gif)$/i) && !f.startsWith("thumbnails/")
         );
-
         const videos = files.filter(f => f.match(/\.mp4$/i));
 
         const photoGallery = document.getElementById('gallery');
@@ -232,7 +244,6 @@
         photoGallery.innerHTML = '';
         videoGallery.innerHTML = '';
 
-        // Photos
         photos.reverse().forEach(filename => {
           const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
           const html = `
@@ -243,7 +254,6 @@
           photoGallery.innerHTML += html;
         });
 
-        // Videos with thumbnails from /thumbnails/ folder
         videos.reverse().forEach(filename => {
           const baseName = filename.replace(/\.(mp4|MP4)$/i, '');
           const thumbnail = bucketUrl + "thumbnails/" + baseName + ".jpg";
@@ -272,7 +282,7 @@
       if (e.target.id === 'lightbox') this.style.display = 'none';
     });
 
-    // Back to Top Button
+    // Back to Top
     const backToTop = document.getElementById('back-to-top');
     window.addEventListener('scroll', () => {
       backToTop.style.display = (window.scrollY > 600) ? 'flex' : 'none';
