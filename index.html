@@ -109,16 +109,9 @@
       display: block;
     }
 
-    /* Better fullscreen for vertical videos */
-    video::-webkit-media-fullscreen {
-      object-fit: contain !important;
-    }
-    video:-webkit-full-screen {
-      object-fit: contain !important;
-    }
-    video:-moz-full-screen {
-      object-fit: contain !important;
-    }
+    video::-webkit-media-fullscreen,
+    video:-webkit-full-screen,
+    video:-moz-full-screen,
     video:fullscreen {
       object-fit: contain !important;
     }
@@ -220,14 +213,16 @@
   <script>
     const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
     const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
-    const captionsUrl = bucketUrl + "captions.json";
+    const captionsUrl = "captions.json";   // ← Now pulling from GitHub
 
     async function loadMedia() {
       let captions = {};
       try {
         const capRes = await fetch(captionsUrl);
         if (capRes.ok) captions = await capRes.json();
-      } catch(e) {}
+      } catch(e) {
+        console.warn("Could not load captions.json — using filename fallbacks");
+      }
 
       try {
         const response = await fetch(workerUrl);
