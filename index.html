@@ -26,33 +26,36 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Hero Banner */
+    /* Updated Hero Banner */
     .hero {
       position: relative;
-      margin: -20px -20px 50px -20px;
-      height: 490px;
-      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)), 
-                  url('marinmonroebannercrop2.jpg') center/cover no-repeat;
+      margin: -20px -20px 40px -20px;
+      height: 400px;
+      background: linear-gradient(
+                    rgba(0,0,0,0.35), 
+                    rgba(0,0,0,0.55)
+                  ), 
+                  url('marinmonroebannercrop3.jpg') 50% 58% / cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      padding-right: 8%;
+      padding-right: 7%;
       color: white;
-      text-shadow: 0 3px 12px rgba(0,0,0,0.9);
+      text-shadow: 0 3px 12px rgba(0,0,0,0.85);
     }
     .hero-content {
       text-align: right;
-      max-width: 420px;
-      margin-right: 40px;               /* pulls text a bit more toward center */
+      max-width: 460px;
+      margin-right: 60px;               /* nudged more toward center */
     }
     .hero h1 {
-      font-size: 3.1em;
+      font-size: 3.2em;
       margin: 0 0 8px 0;
       line-height: 1.05;
       color: #ff69b4;
     }
     .hero p {
-      font-size: 1.45em;
+      font-size: 1.5em;
       margin: 0;
       opacity: 0.95;
     }
@@ -174,6 +177,7 @@
 <body>
   <button class="theme-toggle" id="theme-toggle">🌙</button>
 
+  <!-- Updated Hero Banner -->
   <div class="hero">
     <div class="hero-content">
       <h1>Smart.<br>Sassy.</h1>
@@ -214,7 +218,7 @@
   <script>
     const bucketUrl = "https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/";
     const workerUrl = "https://sparkling-rain-18fb.amandabennett-hbg.workers.dev/list";
-    const captionsUrl = "captions.json";   // ← Now pulling from GitHub
+    const captionsUrl = "captions.json";
 
     async function loadMedia() {
       let captions = {};
