@@ -208,14 +208,27 @@
       z-index: 100;
     }
       
-    .social-links {
-      position: fixed;
-      top: 360px;
-      left: 80px;           /* sits to the bottom left on banner */
-      display: flex;
-      gap: 14px;
-      z-index: 90;
-    }
+.social-links {
+  position: absolute;           /* Changed from fixed */
+  bottom: 30px;                 /* Position from bottom of banner */
+  left: 40px;                   /* Closer to left edge */
+  display: flex;
+  gap: 16px;
+  z-index: 10;
+}
+
+/* Make it even better on mobile */
+@media (max-width: 768px) {
+  .social-links {
+    left: 25px;                 /* Closer to left on phones */
+    bottom: 25px;
+    gap: 14px;
+  }
+  
+  .social-links a {
+    font-size: 1.45em;          /* Slightly smaller on mobile */
+  }
+  
     .social-links a {
       color: var(--text);
       font-size: 1.6em;
