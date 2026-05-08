@@ -208,55 +208,62 @@
       z-index: 100;
     }
       
+/* Social Links Styling */
 .social-links {
-  position: absolute;           /* Changed from fixed */
-  bottom: 10px;                 /* Position from bottom of banner */
-  left: 40px;                   /* Closer to left edge */
+  position: absolute;
+  bottom: 25px;         /* 25px up from the bottom of the banner */
+  left: 30px;           /* 30px in from the left */
   display: flex;
-  gap: 16px;
-  z-index: 10;
+  gap: 18px;
+  z-index: 20;          /* Ensures icons stay on top of the background */
 }
 
-/* Make it even better on mobile */
+.social-links a {
+  display: flex;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Hover effect for desktop */
+.social-links a:hover {
+  transform: scale(1.2);
+}
+
+/* Icon color/filter - optional if your SVGs aren't already the right color */
+.social-links img {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+/* Mobile Adjustments */
 @media (max-width: 768px) {
   .social-links {
-    left: 25px;                 /* Closer to left on phones */
-    bottom: 10px;
-    gap: 14px;
+    bottom: 20px;       /* Slightly tighter to the corner on mobile */
+    left: 20px;
+    gap: 15px;
   }
   
-  .social-links a {
-    font-size: 1.45em;          /* Slightly smaller on mobile */
+  .social-links img {
+    width: 24px;        /* Slightly smaller icons for smaller screens */
+    height: 24px;
   }
-  
-    .social-links a {
-      color: var(--text);
-      font-size: 1.6em;
-      transition: all 0.2s;
-    }
-    .social-links a:hover {
-      transform: scale(1.25);
-      color: #ff69b4;
-    }
+}
   </style>
 </head>
 <body>
   <button class="theme-toggle" id="theme-toggle">🌙</button>
-
-    <!-- Social Links -->
- <div class="social-links">
-  <a href="https://instagram.com/softblondesnack" target="_blank">
-    <img src="instagram.svg" width="28" height="28" alt="Instagram">
-  </a>
-  <a href="https://x.com/softblondesnack" target="_blank">
-    <img src="xlogo.svg" width="28" height="28" alt="X">
-  </a>
-  <a href="https://onlyfans.com/softblondesnack" target="_blank">
-    <img src="onlyfans.svg" width="28" height="28" alt="OnlyFans">
-  </a>
-</div>
-
+     
   <div class="hero">
+    <div class="social-links">
+     <a href="https://instagram.com/softblondesnack" target="_blank">
+       <img src="instagram.svg" width="28" height="28" alt="Instagram">
+     </a>
+     <a href="https://x.com/softblondesnack" target="_blank">
+       <img src="xlogo.svg" width="28" height="28" alt="X">
+     </a>
+     <a href="https://onlyfans.com/softblondesnack" target="_blank">
+       <img src="onlyfans.svg" width="28" height="28" alt="OnlyFans">
+     </a>
+   </div>
+    
     <div class="hero-content">
       <h1>Smart.<br>Sassy.</h1>
       <p>Sincerely Me.</p>
