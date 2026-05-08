@@ -270,7 +270,8 @@
         photoGallery.innerHTML = '';
         videoGallery.innerHTML = '';
 
-        // === IMAGES SECTION (Carousels + Singles) ===
+        // === IMAGES SECTION ===
+        // First add carousels and singles defined in captions.json
         Object.keys(captions).forEach(key => {
           const data = captions[key];
 
@@ -294,7 +295,7 @@
             photoGallery.innerHTML += html;
 
           } else if (typeof data === "string") {
-            // Single image
+            // Single image defined in captions.json
             const html = `
               <div class="item" onclick="openLightbox('${bucketUrl}${key}')">
                 <img src="${bucketUrl}${key}" alt="${data}">
@@ -304,7 +305,7 @@
           }
         });
 
-        // === VIDEOS SECTION (unchanged) ===
+        // === VIDEOS SECTION ===
         const videos = files.filter(f => f.match(/\.mp4$/i));
         videos.reverse().forEach(filename => {
           const baseName = filename.replace(/\.(mp4|MP4)$/i, '');
