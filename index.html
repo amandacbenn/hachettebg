@@ -254,77 +254,86 @@
     const captionsUrl = "captions.json";
 
     async function loadMedia() {
-      let captions = {};
-      try {
-        const res = await fetch(captionsUrl);
-        if (res.ok) captions = await res.json();
-      } catch(e) {}
+  let captions = {};
+  try {
+    const res = await fetch(captionsUrl);
+    if (res.ok) captions = await res.json();
+  } catch(e) { console.error("Could not load captions.json"); }
 
-      try {
-        const response = await fetch(workerUrl);
-        const files = await response.json();
+  try {
+    const response = await fetch(workerUrl);
+    const files = await response.json();
 
-        const photoGallery = document.getElementById('gallery');
-        const videoGallery = document.getElementById('video-gallery');
+    const photoGallery = document.getElementById('gallery');
+    const videoGallery = document.getElementById('video-gallery');
 
-        photoGallery.innerHTML = '';
-        videoGallery.innerHTML = '';
+    photoGallery.innerHTML = '';
+    videoGallery.innerHTML = '';
 
-        // === IMAGES SECTION ===
-        // First add carousels and singles defined in captions.json
-        Object.keys(captions).forEach(key => {
-          const data = captions[key];
+    // Track files used in carousels to prevent duplicates
+    const usedInCarousel = new Set();
 
-          if (data && data.type === "carousel" && data.images) {
-            // Carousel
-            let slides = '';
-            data.images.forEach((img, i) => {
-              slides += `<img src="${bucketUrl}${img}" class="${i===0 ? 'active' : ''}" alt="${data.caption}">`;
-            });
-
-            const html = `
-              <div class="carousel-item">
-                <div class="carousel" data-index="0">
-                  ${slides}
-                  <button class="carousel-btn prev" onclick="prevSlide(this)">‹</button>
-                  <button class="carousel-btn next" onclick="nextSlide(this)">›</button>
-                  <div class="carousel-dots"></div>
-                </div>
-                <div class="caption">${data.caption}</div>
-              </div>`;
-            photoGallery.innerHTML += html;
-
-          } else if (typeof data === "string") {
-            // Single image defined in captions.json
-            const html = `
-              <div class="item" onclick="openLightbox('${bucketUrl}${key}')">
-                <img src="${bucketUrl}${key}" alt="${data}">
-                <div class="caption">${data}</div>
-              </div>`;
-            photoGallery.innerHTML += html;
-          }
+    // 1. PROCESS CAROUSELS FIRST
+    Object.keys(captions).forEach(key => {
+      const data = captions[key];
+      if (data && data.type === "carousel" && data.images) {
+        let slides = '';
+        data.images.forEach((img, i) => {
+          slides += `<img src="${bucketUrl}${img}" class="${i===0 ? 'active' : ''}" alt="${data.caption}">`;
+          usedInCarousel.add(img); // Mark these as used
         });
 
-        // === VIDEOS SECTION ===
-        const videos = files.filter(f => f.match(/\.mp4$/i));
-        videos.reverse().forEach(filename => {
-          const baseName = filename.replace(/\.(mp4|MP4)$/i, '');
-          const thumbnail = bucketUrl + "thumbnails/" + baseName + ".jpg";
-          const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
-
-          const html = `
-            <div class="item">
-              <video controls poster="${thumbnail}">
-                <source src="${bucketUrl}${filename}" type="video/mp4">
-              </video>
-              <div class="caption">${caption}</div>
-            </div>`;
-          videoGallery.innerHTML += html;
-        });
-      } catch (e) {
-        console.error("Error loading media:", e);
+        const html = `
+          <div class="carousel-item">
+            <div class="carousel" data-index="0">
+              ${slides}
+              <button class="carousel-btn prev" onclick="prevSlide(this)">‹</button>
+              <button class="carousel-btn next" onclick="nextSlide(this)">›</button>
+              <div class="carousel-dots"></div>
+            </div>
+            <div class="caption">${data.caption}</div>
+          </div>`;
+        photoGallery.innerHTML += html;
       }
-    }
+    });
+
+    // 2. PROCESS ALL FILES FROM R2 (Images vs Videos)
+    // We reverse to show the newest uploads first
+    files.reverse().forEach(filename => {
+      // Skip if it's in the thumbnails folder or already in a carousel
+      if (filename.startsWith("thumbnails/") || usedInCarousel.has(filename)) return;
+
+      const isVideo = filename.match(/\.(mp4|mov|webm)$/i);
+      const isImage = filename.match(/\.(jpg|jpeg|png|gif|webp|heic)$/i);
+      const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
+
+      if (isImage) {
+        const html = `
+          <div class="item" onclick="openLightbox('${bucketUrl}${filename}')">
+            <img src="${bucketUrl}${filename}" alt="${caption}">
+            <div class="caption">${caption}</div>
+          </div>`;
+        photoGallery.innerHTML += html;
+      } 
+      else if (isVideo) {
+        const baseName = filename.replace(/\.(mp4|MP4)$/i, '');
+        const thumbnail = bucketUrl + "thumbnails/" + baseName + ".jpg";
+        
+        const html = `
+          <div class="item">
+            <video controls poster="${thumbnail}">
+              <source src="${bucketUrl}${filename}" type="video/mp4">
+            </video>
+            <div class="caption">${caption}</div>
+          </div>`;
+        videoGallery.innerHTML += html;
+      }
+    });
+
+  } catch (e) {
+    console.error("Error loading media:", e);
+  }
+}
 
     // Carousel Functions
     function prevSlide(btn) {
