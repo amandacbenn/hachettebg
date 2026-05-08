@@ -86,25 +86,21 @@
       margin: 0 auto 80px;
     }
 
-    /* Carousel Styles */
+    /* Carousel */
     .carousel-item {
       position: relative;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .carousel {
-      position: relative;
-    }
+    .carousel { position: relative; }
     .carousel img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: none;
     }
-    .carousel img.active {
-      display: block;
-    }
+    .carousel img.active { display: block; }
     .carousel-btn {
       position: absolute;
       top: 50%;
@@ -260,8 +256,8 @@
     async function loadMedia() {
       let captions = {};
       try {
-        const capRes = await fetch(captionsUrl);
-        if (capRes.ok) captions = await capRes.json();
+        const res = await fetch(captionsUrl);
+        if (res.ok) captions = await res.json();
       } catch(e) {}
 
       try {
@@ -269,12 +265,16 @@
         const files = await response.json();
 
         const photoGallery = document.getElementById('gallery');
-        photoGallery.innerHTML = '';
+        const videoGallery = document.getElementById('video-gallery');
 
+        photoGallery.innerHTML = '';
+        videoGallery.innerHTML = '';
+
+        // === IMAGES SECTION (Carousels + Singles) ===
         Object.keys(captions).forEach(key => {
           const data = captions[key];
 
-          if (data && data.type === "carousel" && data.images && data.images.length > 0) {
+          if (data && data.type === "carousel" && data.images) {
             // Carousel
             let slides = '';
             data.images.forEach((img, i) => {
@@ -294,7 +294,7 @@
             photoGallery.innerHTML += html;
 
           } else if (typeof data === "string") {
-            // Regular single image
+            // Single image
             const html = `
               <div class="item" onclick="openLightbox('${bucketUrl}${key}')">
                 <img src="${bucketUrl}${key}" alt="${data}">
@@ -302,6 +302,23 @@
               </div>`;
             photoGallery.innerHTML += html;
           }
+        });
+
+        // === VIDEOS SECTION (unchanged) ===
+        const videos = files.filter(f => f.match(/\.mp4$/i));
+        videos.reverse().forEach(filename => {
+          const baseName = filename.replace(/\.(mp4|MP4)$/i, '');
+          const thumbnail = bucketUrl + "thumbnails/" + baseName + ".jpg";
+          const caption = captions[filename] || filename.replace(/\..+$/, '').replace(/[_-]/g, ' ');
+
+          const html = `
+            <div class="item">
+              <video controls poster="${thumbnail}">
+                <source src="${bucketUrl}${filename}" type="video/mp4">
+              </video>
+              <div class="caption">${caption}</div>
+            </div>`;
+          videoGallery.innerHTML += html;
         });
       } catch (e) {
         console.error("Error loading media:", e);
@@ -312,7 +329,7 @@
     function prevSlide(btn) {
       const carousel = btn.parentElement;
       const images = carousel.querySelectorAll('img');
-      let index = parseInt(carousel.dataset.index);
+      let index = parseInt(carousel.dataset.index || 0);
       index = (index - 1 + images.length) % images.length;
       updateCarousel(carousel, index);
     }
@@ -320,7 +337,7 @@
     function nextSlide(btn) {
       const carousel = btn.parentElement;
       const images = carousel.querySelectorAll('img');
-      let index = parseInt(carousel.dataset.index);
+      let index = parseInt(carousel.dataset.index || 0);
       index = (index + 1) % images.length;
       updateCarousel(carousel, index);
     }
@@ -330,15 +347,16 @@
       const images = carousel.querySelectorAll('img');
       images.forEach((img, i) => img.classList.toggle('active', i === index));
 
-      // Update dots
       const dotsContainer = carousel.querySelector('.carousel-dots');
-      dotsContainer.innerHTML = '';
-      images.forEach((_, i) => {
-        const dot = document.createElement('span');
-        dot.classList.toggle('active', i === index);
-        dot.onclick = () => updateCarousel(carousel, i);
-        dotsContainer.appendChild(dot);
-      });
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        images.forEach((_, i) => {
+          const dot = document.createElement('span');
+          dot.classList.toggle('active', i === index);
+          dot.onclick = () => updateCarousel(carousel, i);
+          dotsContainer.appendChild(dot);
+        });
+      }
     }
 
     function openLightbox(src) {
