@@ -59,24 +59,64 @@
 
     .main-header { font-size: 2.4em; margin: 40px 0 30px 0; color: var(--text); }
 
-    .section-header-wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1600px;
-      margin: 30px auto 25px;
-      padding: 0 20px;
-    }
-    .section-header { font-size: 2.0em; margin: 0; color: var(--secondary); }
+/* Container for the Title and the Buttons */
+.section-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allows buttons to move below the title if space runs out */
+  gap: 15px;
+  max-width: 1600px;
+  margin: 30px auto 25px;
+  padding: 0 20px;
+}
 
-    .jump-menu a {
-      padding: 10px 24px;
-      background: #ff69b4;
-      color: white;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: bold;
-    }
+.section-header { 
+  font-size: 2.0em; 
+  margin: 0; 
+  color: var(--secondary); 
+}
+
+/* The Menu containing the two buttons */
+.jump-menu {
+  display: flex;
+  gap: 10px; /* Precise spacing between buttons */
+}
+
+.jump-menu a {
+  padding: 8px 20px;
+  background: #ff69b4;
+  color: white;
+  border-radius: 50px; /* Makes them perfect pills */
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9em;
+  white-space: nowrap; /* Keeps "Images" on one line */
+  transition: opacity 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+}
+
+.jump-menu a:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Fix: Center the headers and buttons when they stack */
+@media (max-width: 600px) {
+  .section-header-wrapper {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .section-header {
+    width: 100%; /* Forces the buttons to the next line */
+    font-size: 1.8em;
+  }
+
+  .jump-menu a {
+    padding: 6px 16px;
+    font-size: 0.85em;
+  }
+}
 
     .gallery {
       display: grid;
