@@ -26,43 +26,48 @@
       transition: background 0.3s, color 0.3s;
     }
 
-/* 1. Desktop View: Tall and Dramatic */
+/* 1. MAIN HERO SETTINGS (Desktop & General) */
 .hero {
   position: relative;
   margin: -20px -20px 40px -20px;
-  height: 65vh;                 /* Uses 65% of the screen height on desktop */
-  min-height: 450px;           
-  /* Updated to your R2 bucket path */
+  height: 65vh;
+  min-height: 450px;
   background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), 
               url('https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/site-assets/IMG_2863.JPEG') center 30% / cover no-repeat;
   display: flex;
   align-items: center;
-  justify-content: flex-end;    /* Content on the right for desktop */
-  padding-right: 7%;
+  justify-content: flex-start; /* Moves container to the left (pillow side) */
+  padding-left: 10%;            /* Pushes text away from the left edge */
+  padding-right: 0;
   color: white;
   text-shadow: 0 3px 12px rgba(0,0,0,0.85);
   transition: height 0.3s ease;
 }
 
-/* Mobile View: Focus on the face and shrink the height */
+/* This block handles the text alignment for desktop */
+.hero-content {
+  text-align: left;             /* Aligns text lines to the left */
+  max-width: 460px;
+  margin-right: 0;
+}
+
+/* 2. MOBILE OVERRIDES (Screens smaller than 768px) */
 @media (max-width: 768px) {
   .hero {
-    height: 45vh;              /* Shorter banner for mobile */
+    height: 45vh;
     min-height: 300px;
-    /* Focuses on the face at the top-right of the image */
-    background-position: 80% 15%; 
-    justify-content: center;    /* Center the text on mobile */
-    padding-right: 0;
+    background-position: 80% 15%; /* Focuses on the face */
+    justify-content: center;      /* Centers the container on mobile */
+    padding-left: 0;              /* Removes the left padding for centering */
   }
 
   .hero-content {
-    text-align: center;
-    margin-right: 0;
+    text-align: center;           /* Centers the text lines for mobile balance */
     max-width: 90%;
   }
 
   .hero h1 {
-    font-size: 2.4em;          /* Scale down the title for small screens */
+    font-size: 2.4em;
   }
 }
 
