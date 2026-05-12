@@ -165,6 +165,7 @@
       gap: 20px;
       max-width: 1600px;
       margin: 0 auto 80px;
+      overflow: hidden; /* Safety net for container blowout */
     }
 
     /* Carousel */
@@ -245,6 +246,15 @@
 
     .item:hover img {
       transform: scale(1.05); /* Slight zoom in */
+    }
+
+    /* Fix for Video scaling in the gallery */
+    .item video {
+      width: 100%;       /* Forces video player to fit container width */
+      height: 100%;      /* Forces video player to fit container height */
+      object-fit: cover; /* Prevents stretching and fills the box nicely */
+      display: block;
+      border-radius: 12px;
     }
 
     .caption {
