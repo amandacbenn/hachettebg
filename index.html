@@ -221,9 +221,17 @@
       overflow: hidden;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       cursor: pointer;
+      transition: box-shadow 0.3s ease;
+      
+      /* Ensure the container has a set aspect ratio */
+      aspect-ratio: 2 / 3;
     }
       
-    .item img {
+.item img {
+      width: 100%;       /* Forces image to fit container width */
+      height: 100%;      /* Forces image to fit container height */
+      object-fit: cover; /* Prevents squishing/stretching */
+      display: block;
       transition: transform 0.5s ease;
     }
 
