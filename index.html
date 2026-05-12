@@ -50,14 +50,19 @@
   margin: -20px -20px 40px -20px;
   height: 65vh;
   min-height: 450px;
+  
+  /* Background setup with Parallax */
   background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), 
-              url('https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/site-assets/IMG_2863.JPEG') center 30% / cover no-repeat;
-  background-attachment: fixed;
+              url('https://pub-a61f2b08e4414067ba6d337c905d46c2.r2.dev/site-assets/IMG_2863.JPEG');
+  background-position: center 30%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* THE PARALLAX LINE */
+
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Moves container to the left (pillow side) */
-  padding-left: 10%;            /* Pushes text away from the left edge */
-  padding-right: 0;
+  justify-content: flex-start;
+  padding-left: 10%;
   color: white;
   text-shadow: 0 3px 12px rgba(0,0,0,0.85);
   transition: height 0.3s ease;
@@ -65,26 +70,27 @@
 
 /* This block handles the text alignment for desktop */
 .hero-content {
-  text-align: left;             /* Aligns text lines to the left */
+  text-align: left;
   max-width: 460px;
-  color: #f4d03f;
-  margin-left: 50px;
-  margin-bottom: 80px;
+  color: #f4d03f; /* Your Soft Gold */
+  
+  /* Nudging it up and to the right over the pillow */
+  margin-left: 60px; 
+  margin-bottom: 60px; 
 }
 
 /* 2. MOBILE OVERRIDES (Screens smaller than 768px) */
 @media (max-width: 768px) {
   .hero {
+    background-attachment: scroll; /* Disables parallax for mobile stability */
+    background-position: 80% 15%; 
     height: 45vh;
-    min-height: 300px;
-    background-position: 80% 15%; /* Focuses on the face */
-    justify-content: center;      /* Centers the container on mobile */
-    padding-left: 0;              /* Removes the left padding for centering */
+    justify-content: center;
+    padding-left: 0;
   }
-
   .hero-content {
-    text-align: center;           /* Centers the text lines for mobile balance */
-    max-width: 90%;
+    margin: 0; /* Reset margins for mobile centering */
+    text-align: center;
   }
 
   .hero h1 {
@@ -222,11 +228,13 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       cursor: pointer;
       transition: box-shadow 0.3s ease;
-      
-      /* Ensure the container has a set aspect ratio */
       aspect-ratio: 2 / 3;
     }
-      
+
+    .item:hover {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3); /* Adds a deeper shadow on hover */
+    }
+    
 .item img {
       width: 100%;       /* Forces image to fit container width */
       height: 100%;      /* Forces image to fit container height */
@@ -237,14 +245,6 @@
 
     .item:hover img {
       transform: scale(1.05); /* Slight zoom in */
-    }
-
-    .item {
-      transition: box-shadow 0.3s ease;
-    }
-
-    .item:hover {
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3); /* Adds a deeper shadow on hover */
     }
 
     .caption {
