@@ -248,14 +248,16 @@
       transform: scale(1.05); /* Slight zoom in */
     }
 
-    /* Fix for Video scaling in the gallery */
-    .item video {
-      width: 100%;       /* Forces video player to fit container width */
-      height: 100%;      /* Forces video player to fit container height */
-      object-fit: cover; /* Prevents stretching and fills the box nicely */
-      display: block;
-      border-radius: 12px;
-    }
+      /* Precise control for Video scaling */
+      .item video {
+        width: 100%;           /* Fit the box width */
+        height: 100%;          /* Fit the box height */
+        max-height: 100%;      /* CRITICAL: Prevents running off top/bottom */
+        object-fit: contain;   /* Shows the full video frame without cropping */
+        background: #000;      /* Adds black bars if the video doesn't perfectly fit the box */
+        display: block;
+        border-radius: 12px;
+      }
 
     .caption {
       position: absolute;
